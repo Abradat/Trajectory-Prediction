@@ -46,7 +46,7 @@ class Predictor():
 
         for cnt in range(1, i + 1):
             self.sXCal(cnt, alpha)
-            self.bYCal(cnt, gamma)
+            self.bXCal(cnt, gamma)
         for cnt in range(1, predictionThresh + 1):
             self.predictX(cnt)
 
