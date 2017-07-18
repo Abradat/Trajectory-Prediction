@@ -89,8 +89,9 @@ class Predictor():
         for cnt in range(1, predictionThresh + 1):
             self.predictY(cnt)
 
-    def drawPlotY(self):
+    def drawPlotY(self, thresh, cut):
         predictedPlot = []
+        '''
         for cnt in range(len(self.predY)):
             predictedPlot.append(cnt + len(self.sY))
         plt.plot(predictedPlot, self.predY, 'ro')
@@ -98,6 +99,15 @@ class Predictor():
         xAxis = range(1, 20)
         xAxis = []
         plt.plot(xAxis, self.originalData, linewidth = 2)
+        plt.show()
+        '''
+        for cnt in range(len(self.predY)):
+            predictedPlot.append(cnt + 1 + len(self.sY))
+        plt.plot(predictedPlot, self.predY, 'ro')
+        plt.axis([1, 20, 0, 20])
+        xAxis = range(cut + 1, thresh + 1)
+        #yAxis = []
+        plt.plot(xAxis, self.originalData[0][cut:], linewidth = 2)
         plt.show()
 
     def addOriginalData(self, data):
@@ -119,7 +129,7 @@ def mainHandler(address, thresh, cut):
     print(myPredictor.predY)
     print(myPredictor.originalData[0][cut:])
     #print(myPredictor.originalData)
-    #myPredictor.drawPlotY()
+    myPredictor.drawPlotY(thresh, cut)
 
 
 def main():
@@ -146,7 +156,7 @@ def main():
     #print(myPredictor.predY)
 
 def main2():
-    mainHandler('Files/1.txt', 20, 10)
+    mainHandler('Files/1.txt', 20, 5)
 
 if __name__ == "__main__":
     main2()
