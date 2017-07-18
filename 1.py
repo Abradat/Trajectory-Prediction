@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import time
 import _thread
+import warnings
+warnings.simplefilter('ignore', np.RankWarning)
 
 class Predictor():
     sX = []
@@ -13,6 +15,7 @@ class Predictor():
     bY = []
     predY = []
 
+    tYEquAns = None
     originalData = []
     def __init__(self, x, y):
         self.x = x
@@ -110,17 +113,25 @@ class Predictor():
         plt.plot(xAxis, self.originalData[0][cut:], linewidth = 2)
         plt.show()
 
+    def fitData(self, thresh, cut, time):
+        times = []
+
+        for cnt in range(1, thresh - cut + 1):
+            times.append(((cut * 1.0) * time) + (cnt) * (time * 1.0))
+        equation = np.polyfit(times, self.predY, 1)
+        self.tYEquAns =((-1) * equation[1]) / equation[0]
+
     def addOriginalData(self, data):
         self.originalData.append(data)
 
 
-def mainHandler(address, thresh, cut):
+def mainHandler(address, thresh, cut, sleepTime):
     aux = []
     myFile = open(address, 'r')
     for cnt in range(thresh):
         aux.append(float(myFile.readline()))
         myFile.seek(0)
-        time.sleep(0.1)
+        time.sleep(sleepTime)
 
         if(cnt == cut):
             myPredictor = Predictor(aux, aux)
@@ -129,6 +140,8 @@ def mainHandler(address, thresh, cut):
     print(myPredictor.predY)
     print(myPredictor.originalData[0][cut:])
     #print(myPredictor.originalData)
+    myPredictor.fitData(thresh, cut, sleepTime)
+    print(myPredictor.tYEquAns)
     myPredictor.drawPlotY(thresh, cut)
 
 
@@ -156,7 +169,7 @@ def main():
     #print(myPredictor.predY)
 
 def main2():
-    mainHandler('Files/1.txt', 20, 5)
+    mainHandler('Files/1.txt', 20, 5, 0.1)
 
 if __name__ == "__main__":
     main2()
